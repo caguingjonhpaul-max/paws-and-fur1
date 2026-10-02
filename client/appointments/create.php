@@ -49,7 +49,8 @@ $time_slots = [
 
 </head>
 
-<body>
+<body class="record-page">
+<main class="record-card">
 
     <h1>Request Appointment</h1>
 
@@ -239,6 +240,7 @@ dateInput.addEventListener("change", function() {
 
 </script>
 
+</main>
 </body>
 
 </html>

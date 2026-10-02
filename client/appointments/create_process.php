@@ -86,7 +86,21 @@ $stmt->bind_param(
     $status
 );
 
-if ($stmt->execute()) {
+try {
+    $created = $stmt->execute();
+} catch (mysqli_sql_exception $exception) {
+    if ($exception->getCode() === 1062) {
+        http_response_code(409);
+        exit('This appointment time is already unavailable. Please choose another slot.');
+    }
+    if ($exception->getCode() === 1452) {
+        http_response_code(400);
+        exit('The selected pet is no longer available. Please choose another pet.');
+    }
+    throw $exception;
+}
+
+if ($created) {
 
     echo "
         <script>

@@ -63,7 +63,7 @@ require_once "../config/database.php";
 
             <div>
                 <h1>Administrator Dashboard</h1>
-                <p>Welcome, Administrator</p>
+                <p>Welcome, <?= htmlspecialchars($_SESSION['full_name'], ENT_QUOTES, 'UTF-8') ?></p>
             </div>
 
             <div class="user-area">

@@ -9,7 +9,7 @@ require_once "../config/database.php";
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registration - PAWS AND FUR CLINIC</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 
 <body>
@@ -17,6 +17,8 @@ require_once "../config/database.php";
 <div class="auth-container">
 
     <div class="auth-box">
+
+        <a class="auth-back" href="../index.php">← Back to home</a>
 
         <h1>PAWS AND FUR</h1>
 
@@ -34,6 +36,7 @@ require_once "../config/database.php";
                     type="text"
                     id="full_name"
                     name="full_name"
+                    maxlength="150"
                     placeholder="Enter your full name"
                     required
                 >
@@ -45,6 +48,7 @@ require_once "../config/database.php";
                     type="text"
                     id="username"
                     name="username"
+                    maxlength="50"
                     placeholder="Enter username"
                     required
                 >
@@ -56,6 +60,7 @@ require_once "../config/database.php";
                     type="email"
                     id="email"
                     name="email"
+                    maxlength="255"
                     placeholder="Enter your email"
                     required
                 >

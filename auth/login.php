@@ -14,7 +14,7 @@ require_once "../config/database.php";
 
     <title>Login - PAWS AND FUR CLINIC</title>
 
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 
 </head>
 
@@ -24,13 +24,15 @@ require_once "../config/database.php";
 
     <div class="auth-box">
 
+        <a class="auth-back" href="../index.php">← Back to home</a>
+
         <h1>PAWS AND FUR</h1>
 
         <p class="auth-subtitle">
             Veterinary Clinic Management System
         </p>
 
-        <h2>Login</h2>
+        <h2>Welcome back</h2>
 
 
         <?php if (isset($_SESSION['login_error'])): ?>
@@ -39,7 +41,7 @@ require_once "../config/database.php";
 
                 <?php
 
-                echo $_SESSION['login_error'];
+                echo htmlspecialchars($_SESSION['login_error'], ENT_QUOTES, 'UTF-8');
 
                 unset($_SESSION['login_error']);
 

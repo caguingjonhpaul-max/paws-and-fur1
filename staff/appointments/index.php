@@ -50,7 +50,8 @@ $result = $stmt->get_result();
 
 </head>
 
-<body>
+<body class="record-page">
+<main class="record-card">
 
     <h1>Appointments</h1>
 
@@ -69,7 +70,7 @@ $result = $stmt->get_result();
 
         <?php while ($appointment = $result->fetch_assoc()): ?>
 
-            <div>
+            <article class="pet-card">
 
                 <h3>
                     Appointment #<?= $appointment['appointment_id'] ?>
@@ -139,7 +140,7 @@ $result = $stmt->get_result();
 
             <?php endif; ?>
 
-            </div>
+            </article>
 
             <hr>
 
@@ -153,6 +154,7 @@ $result = $stmt->get_result();
 
     <?php endif; ?>
 
+</main>
 </body>
 
 </html>

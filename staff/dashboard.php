@@ -3,6 +3,9 @@
 require_once "../includes/staff_auth.php";
 require_once "../config/database.php";
 
+$pet_count = (int) $conn->query('SELECT COUNT(*) AS total FROM pets')->fetch_assoc()['total'];
+$owner_count = (int) $conn->query("SELECT COUNT(*) AS total FROM users WHERE role = 'Client'")->fetch_assoc()['total'];
+
 ?>
 
 <!DOCTYPE html>
@@ -41,9 +44,9 @@ require_once "../config/database.php";
 
             <a href="appointments/index.php">Appointments</a>
 
-            <a href="#">Pet Owners</a>
+            <a href="owners/index.php">Pet Owners</a>
 
-            <a href="#">Pets</a>
+            <a href="pets/index.php">Pets</a>
 
             <a href="#">Vaccinations</a>
 
@@ -70,7 +73,7 @@ require_once "../config/database.php";
 
                 <h1>Staff Dashboard</h1>
 
-                <p>Welcome, Staff</p>
+                <p>Welcome, <?= htmlspecialchars($_SESSION['full_name'], ENT_QUOTES, 'UTF-8') ?></p>
 
             </div>
 
@@ -121,7 +124,7 @@ require_once "../config/database.php";
 
                     <p>Registered pet owners.</p>
 
-                    <strong>0</strong>
+                    <strong><?= $owner_count ?></strong>
 
                 </div>
 
@@ -132,7 +135,7 @@ require_once "../config/database.php";
 
                     <p>Registered pets.</p>
 
-                    <strong>0</strong>
+                    <strong><?= $pet_count ?></strong>
 
                 </div>
 

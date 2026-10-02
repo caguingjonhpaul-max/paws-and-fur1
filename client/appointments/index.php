@@ -44,7 +44,8 @@ $result = $stmt->get_result();
 
 </head>
 
-<body>
+<body class="record-page">
+<main class="record-card">
 
     <h1>My Appointments</h1>
 
@@ -57,8 +58,6 @@ $result = $stmt->get_result();
         Request Appointment
     </a>
 
-    <br><br>
-
     <a href="../dashboard.php">
         Back to Dashboard
     </a>
@@ -69,7 +68,7 @@ $result = $stmt->get_result();
 
         <?php while ($appointment = $result->fetch_assoc()): ?>
 
-            <div>
+            <article class="pet-card">
 
                 <h3>
                     <?= htmlspecialchars($appointment['pet_name']) ?>
@@ -97,7 +96,7 @@ $result = $stmt->get_result();
                     </strong>
                 </p>
 
-            </div>
+            </article>
 
             <hr>
 
@@ -111,6 +110,7 @@ $result = $stmt->get_result();
 
     <?php endif; ?>
 
+</main>
 </body>
 
 </html>

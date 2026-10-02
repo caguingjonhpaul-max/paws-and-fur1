@@ -45,7 +45,8 @@ if ($result->num_rows !== 1) {
 
 </head>
 
-<body>
+<body class="record-page">
+<main class="record-card">
 
     <h1>Reject Appointment</h1>
 
@@ -82,6 +83,7 @@ if ($result->num_rows !== 1) {
         Cancel
     </a>
 
+</main>
 </body>
 
 </html>

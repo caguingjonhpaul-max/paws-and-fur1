@@ -59,7 +59,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $appointment_id
     );
 
-    if ($stmt->execute()) {
+    try {
+        $updated = $stmt->execute();
+    } catch (mysqli_sql_exception $exception) {
+        if ($exception->getCode() === 1062) {
+            http_response_code(409);
+            exit('This appointment slot is already occupied.');
+        }
+        throw $exception;
+    }
+
+    if ($updated) {
 
         echo "
             <script>
@@ -93,7 +103,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 </head>
 
-<body>
+<body class="record-page">
+<main class="record-card">
 
     <h1>Update Appointment Status</h1>
 
@@ -169,6 +180,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         Back to Appointments
     </a>
 
+</main>
 </body>
 
 </html>

@@ -3,6 +3,13 @@
 require_once "../includes/client_auth.php";
 require_once "../config/database.php";
 
+$user_id = (int) $_SESSION['user_id'];
+$stmt = $conn->prepare('SELECT COUNT(*) AS total FROM pets WHERE user_id = ?');
+$stmt->bind_param('i', $user_id);
+$stmt->execute();
+$pet_count = (int) $stmt->get_result()->fetch_assoc()['total'];
+$stmt->close();
+
 ?>
 
 <!DOCTYPE html>
@@ -41,6 +48,8 @@ require_once "../config/database.php";
 
             <a href="pets/index.php">My Pets</a>
 
+            <a href="owner/index.php">Owner Information</a>
+
             <a href="appointments/index.php">Appointments</a>
 
             <a href="#">Vaccinations</a>
@@ -62,14 +71,14 @@ require_once "../config/database.php";
 
                 <h1>Client Dashboard</h1>
 
-                <p>Welcome, Client</p>
+                <p>Welcome, <?= htmlspecialchars($_SESSION['full_name'], ENT_QUOTES, 'UTF-8') ?></p>
 
             </div>
 
 
             <div class="user-area">
 
-                <span>Client</span>
+                <span><?= htmlspecialchars($_SESSION['full_name'], ENT_QUOTES, 'UTF-8') ?></span>
 
                 <a href="../auth/logout.php">
                     Logout
@@ -102,7 +111,7 @@ require_once "../config/database.php";
 
                     <p>View your registered pets.</p>
 
-                    <strong>0</strong>
+                    <strong><?= $pet_count ?></strong>
 
                 </div>
 

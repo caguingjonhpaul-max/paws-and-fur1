@@ -2,9 +2,23 @@
 
 require_once "../../includes/auth.php";
 require_once "../../config/database.php";
+require_once "../../includes/pet_module.php";
 
 auth("Client");
 
+$user_id = (int) $_SESSION['user_id'];
+$stmt = $conn->prepare('SELECT full_name, email FROM users WHERE user_id = ? AND role = ?');
+$role = 'Client';
+$stmt->bind_param('is', $user_id, $role);
+$stmt->execute();
+$owner = $stmt->get_result()->fetch_assoc();
+$stmt->close();
+if (!$owner) {
+    http_response_code(404);
+    exit('Owner account not found.');
+}
+
+[$errors, $values] = pet_take_form();
 ?>
 
 <!DOCTYPE html>
@@ -21,11 +35,20 @@ auth("Client");
 
 </head>
 
-<body>
+<body class="record-page">
+<main class="record-card">
 
     <h1>Add Pet</h1>
 
+    <p>Owner: <?= pet_escape($owner['full_name']) ?> (<?= pet_escape($owner['email']) ?>)</p>
+    <p><a href="../owner/index.php">Update owner information</a></p>
+
+    <?php foreach ($errors as $error): ?>
+        <p class="error-message"><?= pet_escape($error) ?></p>
+    <?php endforeach; ?>
+
     <form action="create_process.php" method="POST">
+        <input type="hidden" name="csrf_token" value="<?= pet_escape(pet_csrf_token()) ?>">
 
         <div class="form-group">
 
@@ -35,6 +58,8 @@ auth("Client");
                 type="text"
                 id="pet_name"
                 name="pet_name"
+                maxlength="100"
+                value="<?= pet_escape($values['pet_name'] ?? '') ?>"
                 required
             >
 
@@ -47,11 +72,9 @@ auth("Client");
             <select id="species" name="species" required>
 
                 <option value="">Select Species</option>
-                <option value="Dog">Dog</option>
-                <option value="Cat">Cat</option>
-                <option value="Bird">Bird</option>
-                <option value="Rabbit">Rabbit</option>
-                <option value="Other">Other</option>
+                <?php foreach (['Dog', 'Cat', 'Bird', 'Rabbit', 'Other'] as $species): ?>
+                    <option value="<?= $species ?>" <?= ($values['species'] ?? '') === $species ? 'selected' : '' ?>><?= $species ?></option>
+                <?php endforeach; ?>
 
             </select>
 
@@ -65,6 +88,8 @@ auth("Client");
                 type="text"
                 id="breed"
                 name="breed"
+                maxlength="100"
+                value="<?= pet_escape($values['breed'] ?? '') ?>"
             >
 
         </div>
@@ -76,8 +101,9 @@ auth("Client");
             <select id="gender" name="gender" required>
 
                 <option value="">Select Gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
+                <?php foreach (['Male', 'Female'] as $gender): ?>
+                    <option value="<?= $gender ?>" <?= ($values['gender'] ?? '') === $gender ? 'selected' : '' ?>><?= $gender ?></option>
+                <?php endforeach; ?>
 
             </select>
 
@@ -91,6 +117,8 @@ auth("Client");
                 type="date"
                 id="birth_date"
                 name="birth_date"
+                max="<?= date('Y-m-d') ?>"
+                value="<?= pet_escape($values['birth_date'] ?? '') ?>"
             >
 
         </div>
@@ -103,6 +131,8 @@ auth("Client");
                 type="text"
                 id="color"
                 name="color"
+                maxlength="100"
+                value="<?= pet_escape($values['color'] ?? '') ?>"
             >
 
         </div>
@@ -117,6 +147,7 @@ auth("Client");
 
     <a href="index.php">Back to My Pets</a>
 
+</main>
 </body>
 
 </html>

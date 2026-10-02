@@ -2,6 +2,7 @@
 
 require_once "../../includes/auth.php";
 require_once "../../config/database.php";
+require_once "../../includes/pet_module.php";
 
 auth("Client");
 
@@ -35,32 +36,26 @@ $result = $stmt->get_result();
 
 </head>
 
-<body>
-
-    <h1>My Pets</h1>
-
-    <p>
-        Welcome,
-        <?= htmlspecialchars($_SESSION['full_name']) ?>
+<body class="record-page">
+<main class="record-card">
+    <span class="eyebrow">Client portal</span>
+    <h1>My pets</h1>
+    <p>Manage your pets' information in one place.</p>
+    <p class="record-actions">
+        <a class="button" href="create.php">Add pet</a>
+        <a href="../owner/index.php">Owner information</a>
+        <a href="../dashboard.php">Dashboard</a>
     </p>
 
-    <a href="create.php">Add Pet</a>
-
-    <br><br>
-
-    <a href="../dashboard.php">Back to Dashboard</a>
-
-    <hr>
-
     <?php if ($result->num_rows > 0): ?>
-
+        <div class="pet-grid">
         <?php while ($pet = $result->fetch_assoc()): ?>
 
-            <div>
+            <article class="pet-card">
 
-                <h3>
+                <h2>
                     <?= htmlspecialchars($pet['pet_name']) ?>
-                </h3>
+                </h2>
 
                 <p>
                     Species:
@@ -87,16 +82,20 @@ $result = $stmt->get_result();
                     <?= htmlspecialchars($pet['color'] ?? 'N/A') ?>
                 </p>
 
-                <a href="delete.php?id=<?= $pet['pet_id'] ?>"
-                   onclick="return confirm('Are you sure you want to delete this pet?');">
-                    Delete
-                </a>
+                <p class="record-actions">
+                    <a href="view.php?id=<?= (int) $pet['pet_id'] ?>">View details</a>
+                    <a href="edit.php?id=<?= (int) $pet['pet_id'] ?>">Edit</a>
+                </p>
+                <form action="delete.php" method="post" onsubmit="return confirm('Are you sure you want to delete this pet?');">
+                    <input type="hidden" name="pet_id" value="<?= (int) $pet['pet_id'] ?>">
+                    <input type="hidden" name="csrf_token" value="<?= pet_escape(pet_csrf_token()) ?>">
+                    <button type="submit">Delete</button>
+                </form>
 
-            </div>
-
-            <hr>
+            </article>
 
         <?php endwhile; ?>
+        </div>
 
     <?php else: ?>
 
@@ -104,6 +103,7 @@ $result = $stmt->get_result();
 
     <?php endif; ?>
 
+</main>
 </body>
 
 </html>
