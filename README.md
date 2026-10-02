@@ -27,6 +27,7 @@ application database does not exist. For an existing database, it adds the
 vaccinations table if that table is missing; it keeps existing accounts, pets,
 and appointments. It checks the login page before reporting success. Open
 [http://localhost/paws_and_fur/](http://localhost/paws_and_fur/).
+
 If it reports that Apache did not respond, check the XAMPP Control Panel and
 whether another program is using port 80. If creating the junction is denied,
 run PowerShell as Administrator once and rerun the script.
@@ -43,3 +44,18 @@ Database setup and migrations are documented in [database/README.md](database/RE
 The local `config/database.php` connection file is excluded from Git. If your
 MariaDB root account has a password or uses a different database name, configure
 the connection and import the schema manually as described in the database guide.
+
+### First administrator on a new database
+
+If this PC has no Administrator account, create one locally from PowerShell
+in the project directory:
+
+```powershell
+& 'C:\xampp\php\php.exe' .\scripts\create-first-admin.php
+```
+
+Enter a name, username, and email. The command prints a generated password
+once. Sign in with it, then use **Admin > Users > Create Admin or Staff** to
+add more privileged accounts. This command refuses to create an account when
+an Administrator already exists. Accounts are stored in this PC's MariaDB
+database; cloning the Git repository does not copy them.
