@@ -39,9 +39,9 @@ require_once "../config/database.php";
 
             <a href="dashboard.php">Dashboard</a>
 
-            <a href="#">My Pets</a>
+            <a href="pets/index.php">My Pets</a>
 
-            <a href="#">Appointments</a>
+            <a href="appointments/index.php">Appointments</a>
 
             <a href="#">Vaccinations</a>
 
