@@ -63,7 +63,7 @@ $recent_pets = $conn->query("
 
             <a href="dashboard.php">Dashboard</a>
 
-            <a href="#users">Users</a>
+            <a href="users/index.php">Users</a>
 
             <a href="../staff/appointments/index.php">Appointments</a>
 
@@ -145,6 +145,7 @@ $recent_pets = $conn->query("
 
             <section id="users" class="welcome-card" style="margin-top: 25px;">
                 <h2>Recent users</h2>
+                <p class="record-actions"><a class="button button-small" href="users/create.php">Create Admin or Staff</a><a href="users/index.php">View all users</a></p>
                 <?php if (!$recent_users): ?>
                     <p>No users are registered.</p>
                 <?php else: ?>
