@@ -48,6 +48,9 @@ $result = $stmt->get_result();
 <main class="record-card">
 
     <h1>My Appointments</h1>
+    <?php if (isset($_GET['rescheduled'])): ?>
+        <p class="success-message">Appointment rescheduled successfully.</p>
+    <?php endif; ?>
 
     <p>
         Welcome,
@@ -95,6 +98,9 @@ $result = $stmt->get_result();
                         <?= htmlspecialchars($appointment['status']) ?>
                     </strong>
                 </p>
+                <?php if (in_array($appointment['status'], ['Pending', 'Approved', 'Confirmed'], true)): ?>
+                    <p><a href="../../appointments/reschedule.php?id=<?= (int) $appointment['appointment_id'] ?>">Reschedule</a></p>
+                <?php endif; ?>
 
             </article>
 

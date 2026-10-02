@@ -27,5 +27,5 @@ if (!$pet) { http_response_code(404); exit('Pet not found.'); }
     </dl>
     <h2>Pet owner</h2>
     <dl class="record-details"><dt>Name</dt><dd><?= pet_escape($pet['full_name']) ?></dd><dt>Email</dt><dd><?= pet_escape($pet['email']) ?></dd></dl>
-    <p class="record-actions"><a href="index.php">Back to pet records</a></p>
+    <p class="record-actions"><a href="../vaccinations/form.php?pet_id=<?= $pet_id ?>">Record vaccination</a><a href="../vaccinations/index.php">Vaccination records</a><a href="index.php">Back to pet records</a></p>
 </main></body></html>

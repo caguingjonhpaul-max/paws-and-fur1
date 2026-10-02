@@ -3,7 +3,13 @@
 require_once "../../includes/auth.php";
 require_once "../../config/database.php";
 
-auth("Staff");
+auth();
+if (!in_array($_SESSION['role'] ?? null, ['Staff', 'Administrator'], true)) {
+    http_response_code(403);
+    exit('Access denied.');
+}
+$can_update_status = $_SESSION['role'] === 'Staff';
+$dashboard_url = $can_update_status ? '../dashboard.php' : '../../admin/dashboard.php';
 
 $stmt = $conn->prepare("
     SELECT
@@ -54,13 +60,16 @@ $result = $stmt->get_result();
 <main class="record-card">
 
     <h1>Appointments</h1>
+    <?php if (isset($_GET['rescheduled'])): ?>
+        <p class="success-message">Appointment rescheduled successfully.</p>
+    <?php endif; ?>
 
     <p>
         Welcome,
         <?= htmlspecialchars($_SESSION['full_name']) ?>
     </p>
 
-    <a href="../dashboard.php">
+    <a href="<?= $dashboard_url ?>">
         Back to Dashboard
     </a>
 
@@ -117,7 +126,10 @@ $result = $stmt->get_result();
     </p>
 
 <?php endif; ?>
-                <?php if ($appointment['status'] === 'Pending'): ?>
+                <?php if (in_array($appointment['status'], ['Pending', 'Approved', 'Confirmed'], true)): ?>
+                    <p><a href="../../appointments/reschedule.php?id=<?= (int) $appointment['appointment_id'] ?>">Reschedule</a></p>
+                <?php endif; ?>
+                <?php if ($can_update_status && $appointment['status'] === 'Pending'): ?>
 
                 <a href="approve.php?id=<?= $appointment['appointment_id'] ?>">
                     Approve
@@ -129,9 +141,9 @@ $result = $stmt->get_result();
                     Reject
                 </a>
 
-                <?php elseif (
+                <?php elseif ($can_update_status && (
                     $appointment['status'] === 'Approved' ||
-                    $appointment['status'] === 'Confirmed'
+                    $appointment['status'] === 'Confirmed')
                 ): ?>
 
                 <a href="update_status.php?id=<?= $appointment['appointment_id'] ?>">

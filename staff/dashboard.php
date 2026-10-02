@@ -2,9 +2,21 @@
 
 require_once "../includes/staff_auth.php";
 require_once "../config/database.php";
+require_once "../includes/vaccination_module.php";
 
 $pet_count = (int) $conn->query('SELECT COUNT(*) AS total FROM pets')->fetch_assoc()['total'];
 $owner_count = (int) $conn->query("SELECT COUNT(*) AS total FROM users WHERE role = 'Client'")->fetch_assoc()['total'];
+$due_through = vaccination_today()->modify('+30 days')->format('Y-m-d');
+$stmt = $conn->prepare("SELECT COUNT(*) AS total FROM vaccinations v
+    WHERE v.next_due_on <= ?
+    AND NOT EXISTS (SELECT 1 FROM vaccinations newer WHERE newer.pet_id = v.pet_id
+        AND newer.vaccine_name = v.vaccine_name
+        AND (newer.administered_on > v.administered_on OR
+             (newer.administered_on = v.administered_on AND newer.vaccination_id > v.vaccination_id)))");
+$stmt->bind_param('s', $due_through);
+$stmt->execute();
+$vaccination_due_count = (int) $stmt->get_result()->fetch_assoc()['total'];
+$stmt->close();
 
 ?>
 
@@ -48,7 +60,7 @@ $owner_count = (int) $conn->query("SELECT COUNT(*) AS total FROM users WHERE rol
 
             <a href="pets/index.php">Pets</a>
 
-            <a href="#">Vaccinations</a>
+            <a href="vaccinations/index.php">Vaccinations</a>
 
             <a href="#">Veterinarians</a>
 
@@ -142,11 +154,11 @@ $owner_count = (int) $conn->query("SELECT COUNT(*) AS total FROM users WHERE rol
 
                 <div class="dashboard-card">
 
-                    <h3>Low Stock</h3>
+                    <h3>Vaccinations due</h3>
 
-                    <p>Inventory items requiring attention.</p>
+                    <p><a href="vaccinations/index.php">Due within 30 days or overdue.</a></p>
 
-                    <strong>0</strong>
+                    <strong><?= $vaccination_due_count ?></strong>
 
                 </div>
 

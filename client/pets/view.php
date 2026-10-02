@@ -50,6 +50,7 @@ if (!$pet) {
         <p class="record-actions">
             <a href="edit.php?id=<?= $pet_id ?>">Edit pet</a>
             <a href="../owner/index.php">Edit owner information</a>
+            <a href="../vaccinations/index.php">Vaccination records</a>
             <a href="index.php">Back to my pets</a>
         </p>
     </main>

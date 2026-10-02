@@ -9,6 +9,11 @@ $stmt->bind_param('i', $user_id);
 $stmt->execute();
 $pet_count = (int) $stmt->get_result()->fetch_assoc()['total'];
 $stmt->close();
+$stmt = $conn->prepare('SELECT COUNT(*) AS total FROM vaccinations v JOIN pets p ON p.pet_id = v.pet_id WHERE p.user_id = ?');
+$stmt->bind_param('i', $user_id);
+$stmt->execute();
+$vaccination_count = (int) $stmt->get_result()->fetch_assoc()['total'];
+$stmt->close();
 
 ?>
 
@@ -52,7 +57,7 @@ $stmt->close();
 
             <a href="appointments/index.php">Appointments</a>
 
-            <a href="#">Vaccinations</a>
+            <a href="vaccinations/index.php">Vaccinations</a>
 
             <a href="#">Notifications</a>
 
@@ -133,7 +138,7 @@ $stmt->close();
 
                     <p>View your pets' vaccination records.</p>
 
-                    <strong>0</strong>
+                    <strong><?= $vaccination_count ?></strong>
 
                 </div>
 
