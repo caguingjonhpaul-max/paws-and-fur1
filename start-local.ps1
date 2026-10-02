@@ -56,16 +56,31 @@ if (-not $mysqlRunning) {
 }
 
 $mysqlReady = $false
+$mysqlError = ''
 for ($attempt = 0; $attempt -lt 20; $attempt++) {
-    $probe = & $mysqlClient --user=root --batch --skip-column-names --execute='SELECT 1' 2>$null
-    if ($LASTEXITCODE -eq 0 -and $probe -eq '1') {
+    # Windows PowerShell treats native stderr as a terminating error when
+    # ErrorActionPreference is Stop. A refused connection is expected while
+    # MariaDB starts, so capture it and keep retrying.
+    $previousErrorActionPreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    try {
+        $probe = & $mysqlClient --user=root --batch --skip-column-names `
+            --connect-timeout=1 --execute='SELECT 1' 2>&1
+        $probeExitCode = $LASTEXITCODE
+    } finally {
+        $ErrorActionPreference = $previousErrorActionPreference
+    }
+    if ($probeExitCode -eq 0 -and $probe -eq '1') {
         $mysqlReady = $true
         break
     }
+    $mysqlError = ($probe | Out-String).Trim()
     Start-Sleep -Milliseconds 500
 }
 if (-not $mysqlReady) {
-    throw 'MariaDB did not accept the default XAMPP root login. Check MySQL in the XAMPP Control Panel. If root has a password, configure the database manually using database\README.md.'
+    $mysqlLog = Join-Path $xamppRoot 'mysql\data\mysql_error.log'
+    $logHint = if (Test-Path -LiteralPath $mysqlLog) { " Check $mysqlLog for the startup error." } else { '' }
+    throw "MariaDB did not start or accept the default XAMPP root login. $mysqlError$logHint Open the XAMPP Control Panel and try starting MySQL there."
 }
 
 $databaseExists = & $mysqlClient --user=root --batch --skip-column-names `

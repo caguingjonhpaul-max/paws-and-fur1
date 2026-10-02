@@ -28,6 +28,10 @@ success. Open [http://localhost/paws_and_fur/](http://localhost/paws_and_fur/).
 If it reports that Apache did not respond, check the XAMPP Control Panel and
 whether another program is using port 80. If creating the junction is denied,
 run PowerShell as Administrator once and rerun the script.
+If it reports that MariaDB did not start, open the XAMPP Control Panel and
+start MySQL there to see its error. The MariaDB startup log is usually at
+`C:\xampp\mysql\data\mysql_error.log`; a different installation root changes
+that path.
 
 Git contains the database structure but no account, pet, or appointment records.
 For the same records on another PC, export `paws_and_fur_db` from the first PC
