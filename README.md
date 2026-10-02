@@ -23,8 +23,10 @@ If PowerShell blocks script execution, use
 
 The script starts MariaDB and Apache, creates `config/database.php` with default
 XAMPP settings if it is missing, and imports `database/schema.sql` only when the
-application database does not exist. It checks the login page before reporting
-success. Open [http://localhost/paws_and_fur/](http://localhost/paws_and_fur/).
+application database does not exist. For an existing database, it adds the
+vaccinations table if that table is missing; it keeps existing accounts, pets,
+and appointments. It checks the login page before reporting success. Open
+[http://localhost/paws_and_fur/](http://localhost/paws_and_fur/).
 If it reports that Apache did not respond, check the XAMPP Control Panel and
 whether another program is using port 80. If creating the junction is denied,
 run PowerShell as Administrator once and rerun the script.

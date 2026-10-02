@@ -18,8 +18,9 @@ $apacheExe = Join-Path $xamppRoot 'apache\bin\httpd.exe'
 $databaseConfig = Join-Path $projectRoot 'config\database.php'
 $databaseExample = Join-Path $projectRoot 'config\database.example.php'
 $schemaFile = Join-Path $projectRoot 'database\schema.sql'
+$vaccinationMigration = Join-Path $projectRoot 'database\migrations\20261002_vaccinations.sql'
 
-foreach ($file in @($mysqlServer, $mysqlClient, $mysqlConfig, $apacheExe, $databaseExample, $schemaFile)) {
+foreach ($file in @($mysqlServer, $mysqlClient, $mysqlConfig, $apacheExe, $databaseExample, $schemaFile, $vaccinationMigration)) {
     if (-not (Test-Path -LiteralPath $file -PathType Leaf)) {
         throw "Required file not found: $file"
     }
@@ -100,6 +101,20 @@ if (-not $databaseExists) {
     if ($LASTEXITCODE -ne 0 -or $tableCount -ne '3') {
         throw 'paws_and_fur_db exists but is missing application tables. See database\README.md before changing existing data.'
     }
+}
+
+$vaccinationsTable = & $mysqlClient --user=root --batch --skip-column-names `
+    --execute="SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'paws_and_fur_db' AND TABLE_NAME = 'vaccinations'"
+if ($LASTEXITCODE -ne 0) {
+    throw 'Could not inspect the vaccination table in the local database.'
+}
+if (-not $vaccinationsTable) {
+    Get-Content -LiteralPath $vaccinationMigration -Raw |
+        & $mysqlClient --user=root paws_and_fur_db
+    if ($LASTEXITCODE -ne 0) {
+        throw 'Could not add the vaccinations table. Existing accounts and appointments were not replaced.'
+    }
+    Write-Output 'Added the vaccinations table to the existing database.'
 }
 
 $apacheRunning = Get-Process httpd -ErrorAction SilentlyContinue |

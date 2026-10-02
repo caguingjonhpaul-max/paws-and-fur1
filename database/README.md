@@ -5,8 +5,10 @@ This application uses MariaDB through PHP `mysqli` and expects a database named
 is excluded from Git.
 
 - For a new database, import `schema.sql` once.
-- For an existing database, import `migrations/20261002_vaccinations.sql` once
-  to add vaccination records without changing existing pet or appointment data.
+- For an existing database, `start-local.ps1` adds the vaccinations table if
+  missing. If setting up without that script, import
+  `migrations/20261002_vaccinations.sql` once. This does not change existing
+  pet or appointment data.
 - For a database created before October 2026, back up the data first, then import
   `migrations/20261002_appointment_integrity.sql` and
   `migrations/20261002_profile_field_lengths.sql` once, in that order. Do not
