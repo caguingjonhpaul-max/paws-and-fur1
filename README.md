@@ -2,23 +2,38 @@
 
 ## Run locally with XAMPP on Windows
 
-The project lives in this Git checkout. `start-local.ps1` creates a persistent
-junction at `C:\xampp\htdocs\paws_and_fur` pointing to the checkout, then starts
-XAMPP Apache and MariaDB if needed.
+Install XAMPP with Apache, PHP, and MariaDB. Clone this repository anywhere,
+including directly into `C:\xampp\htdocs\paws_and_fur`. The setup script creates
+a junction into XAMPP's `htdocs` folder when the checkout is elsewhere.
 
-For a fresh checkout, copy `config/database.example.php` to
-`config/database.php`, edit the credentials if needed, and import
-`database/schema.sql` into MariaDB. Then, from PowerShell in the project
-directory, run:
+From PowerShell in the project directory, run:
 
 ```powershell
 .\start-local.ps1
 ```
 
-Open [http://localhost/paws_and_fur/](http://localhost/paws_and_fur/).
-If creating the junction is denied, run PowerShell as Administrator once and
-run the script again. After a reboot, run the script or start Apache and MySQL
-from the XAMPP Control Panel; the junction remains in place.
+If XAMPP is installed elsewhere, pass its directory:
+
+```powershell
+.\start-local.ps1 -XamppRoot 'D:\xampp'
+```
+
+If PowerShell blocks script execution, use
+`powershell -ExecutionPolicy Bypass -File .\start-local.ps1`.
+
+The script starts MariaDB and Apache, creates `config/database.php` with default
+XAMPP settings if it is missing, and imports `database/schema.sql` only when the
+application database does not exist. It checks the login page before reporting
+success. Open [http://localhost/paws_and_fur/](http://localhost/paws_and_fur/).
+If it reports that Apache did not respond, check the XAMPP Control Panel and
+whether another program is using port 80. If creating the junction is denied,
+run PowerShell as Administrator once and rerun the script.
+
+Git contains the database structure but no account, pet, or appointment records.
+For the same records on another PC, export `paws_and_fur_db` from the first PC
+and import it on the second PC. Do that before starting with an empty database.
 
 Database setup and migrations are documented in [database/README.md](database/README.md).
-The local `config/database.php` connection file is excluded from Git.
+The local `config/database.php` connection file is excluded from Git. If your
+MariaDB root account has a password or uses a different database name, configure
+the connection and import the schema manually as described in the database guide.
